@@ -1,0 +1,180 @@
+Zad.1
+
+Nie zastosowano numeru PESEL jako klucza głównego, ponieważ PESEL może być 
+problematyczny w przypadku potencjalnych zmian lub korekt w danych.
+Zastosowano osobne kolumny id jako klucze główne.
+
+CREATE DATABASE Praca;
+USE Praca;
+
+CREATE TABLE Ludzie (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    PESEL CHAR(11) NOT NULL UNIQUE,
+    imie VARCHAR(30) NOT NULL,
+    nazwisko VARCHAR(30) NOT NULL,
+    data_urodzenia DATE NOT NULL,
+    plec ENUM('K', 'M') NOT NULL,
+    CHECK (PESEL REGEXP '^[0-9]{11}$'), 
+    CHECK ( 
+        YEAR(data_urodzenia) = 
+            CASE 
+                WHEN CAST(SUBSTRING(PESEL, 3, 2) AS UNSIGNED) > 20 
+                THEN  CONCAT('20', SUBSTRING(PESEL, 1, 2))
+                ELSE 
+                        CONCAT('19', SUBSTRING(PESEL, 1, 2))
+                END
+        ),
+    CHECK ( 
+        CAST(MONTH(data_urodzenia) AS CHAR(2)) = 
+            LPAD(CASE 
+                WHEN CAST(SUBSTRING(PESEL, 3, 2) AS UNSIGNED) > 20 THEN CAST(SUBSTRING(PESEL, 3, 2) AS UNSIGNED) - 20
+                ELSE
+                     CAST(SUBSTRING(PESEL, 3, 2) AS UNSIGNED)
+                END, 2, '0')
+        ),
+    CHECK (
+        CAST(DAY(data_urodzenia) AS CHAR(2)) = 
+            LPAD(CASE 
+                 WHEN CAST(SUBSTRING(PESEL, 5, 2) AS UNSIGNED) < 32 THEN 
+                    CAST(SUBSTRING(PESEL, 5, 2) AS UNSIGNED)
+                ELSE 
+                    NULL  
+                END, 2, '0')
+        ),
+    CHECK (plec = IF(SUBSTRING(PESEL, 7, 1) % 2 = 0, 'K', 'M')));
+
+CREATE TABLE Zawody (
+    zawod_id INT AUTO_INCREMENT PRIMARY KEY,
+    nazwa VARCHAR(50) NOT NULL,
+    pensja_min FLOAT NOT NULL CHECK (pensja_min > 0),
+    pensja_max FLOAT NOT NULL CHECK (pensja_max > pensja_min)
+);
+
+CREATE TABLE Pracownicy (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    PESEL CHAR(11) NOT NULL,
+    zawod_id INT NOT NULL,
+    pensja FLOAT NOT NULL CHECK (pensja > 0),
+    FOREIGN KEY (PESEL) REFERENCES Ludzie(PESEL),
+    FOREIGN KEY (zawod_id) REFERENCES Zawody(zawod_id)
+);
+
+-- Dodanie zawodów do tabeli Zawody
+INSERT INTO Zawody (nazwa, pensja_min, pensja_max)
+VALUES
+('Polityk', 5000, 20000),
+('Nauczyciel', 3000, 8000),
+('Lekarz', 7000, 15000),
+('Informatyk', 6000, 25000);
+
+
+CREATE PROCEDURE AssignJobs()
+BEGIN
+    DECLARE done INT DEFAULT 0;
+    DECLARE person_PESEL CHAR(11);
+    DECLARE person_gender ENUM('K', 'M');
+    DECLARE person_age INT;
+    DECLARE cur CURSOR FOR SELECT PESEL, plec, YEAR(CURDATE()) - YEAR(data_urodzenia) AS age FROM Ludzie WHERE YEAR(CURDATE()) - YEAR(data_urodzenia) >= 18;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO person_PESEL, person_gender, person_age;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF person_gender = 'M' AND person_age <= 65 THEN
+            INSERT INTO Pracownicy (PESEL, zawod_id, pensja) VALUES (person_PESEL, 3, 8000);
+        ELSEIF person_gender = 'K' AND person_age <= 60 THEN
+            INSERT INTO Pracownicy (PESEL, zawod_id, pensja) VALUES (person_PESEL, 3, 8000);
+        END IF;
+    END LOOP;
+
+    CLOSE cur;
+END;
+
+CALL AssignJobs(); --wywolanie procedury
+
+Zad.2
+
+CREATE INDEX idx_plec_imie ON Ludzie (plec, imie);
+CREATE INDEX idx_pensja ON Pracownicy (pensja);
+
+-- Kobiety, których imię zaczyna się na 'A'
+SELECT * FROM Ludzie WHERE plec = 'K' AND imie LIKE 'A%';
+
+-- Wszystkie kobiety
+SELECT * FROM Ludzie WHERE plec = 'K';
+
+-- Osoby, których imię zaczyna się na 'K'
+SELECT * FROM Ludzie WHERE imie LIKE 'K%';
+
+-- Osoby zarabiające poniżej 2000
+SELECT * FROM Pracownicy WHERE pensja < 2000;
+
+-- Informatycy płci męskiej zarabiający powyżej 10000
+SELECT * FROM Pracownicy P
+JOIN Zawody Z ON P.zawod_id = Z.zawod_id
+WHERE Z.nazwa = 'Informatyk' AND pensja > 10000 AND P.PESEL IN (SELECT PESEL FROM Ludzie WHERE plec = 'M');
+
+
+Zad.3
+
+
+CREATE PROCEDURE GiveRaise(job_name VARCHAR(50))
+BEGIN
+    DECLARE max_salary FLOAT;
+    DECLARE min_salary FLOAT;
+
+    SELECT pensja_min, pensja_max INTO min_salary, max_salary FROM Zawody WHERE nazwa = job_name;
+    START TRANSACTION;
+
+    UPDATE Pracownicy P
+    JOIN Zawody Z ON P.zawod_id = Z.zawod_id
+    SET P.pensja = P.pensja * 1.05
+    WHERE Z.nazwa = job_name AND P.pensja * 1.05 <= max_salary;
+
+    IF ROW_COUNT() > 0 THEN
+        COMMIT;
+    ELSE
+        ROLLBACK;
+    END IF;
+END;
+
+CALL GiveRaise('Informatyk');
+
+Zad.4
+
+
+
+PREPARE liczba_kobiet FROM 'SELECT COUNT(*)
+                            FROM Ludzie
+                            JOIN Pracownicy ON Ludzie.pesel = Pracownicy.pesel
+                            JOIN Zawody ON Pracownicy.zawod_id = Zawody.zawod_id
+                            WHERE Ludzie.plec = "K" AND Zawody.nazwa = ?';
+
+SET @nazwa = 'Lekarz';
+EXECUTE liczba_kobiet USING @nazwa;
+
+Zad.5
+backup:
+mysqldump -u [user] -p Praca > Praca_backup.sql
+
+przywrocenie:
+mysql -u [user] -p < Praca_backup.sql
+
+
+
+zad.6
+
+SQL injection (intro)
+zad.1
+SELECT department FROM Employees WHERE userid = 96134; 
+
+UPDATE Employees SET department = 'Sales' WHERE userid = 89762;
+
+ALTER TABLE Employees ADD COLUMN phone VARCHAR(20);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON grant_rights TO unauthorized_user;
+

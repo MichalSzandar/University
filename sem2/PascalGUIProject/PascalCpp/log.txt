@@ -1,0 +1,14 @@
+Apr 25, 2024 5:13:29 PM GUI <init>
+INFO: Scene has been inited
+Apr 25, 2024 5:13:36 PM GUIButton$1 handle
+INFO: Button
+Apr 25, 2024 5:13:36 PM CppRunner getOutput
+SEVERE: ERROR: zla dana. Podano: ala, a oczekiwano liczby calkowitej
+Apr 25, 2024 5:13:39 PM CppRunner getOutput
+INFO: Program exited with code: 0
+Apr 25, 2024 5:13:47 PM GUIButton$1 handle
+INFO: Button
+Apr 25, 2024 5:13:47 PM CppRunner getOutput
+INFO: program reutrned: 210
+Apr 25, 2024 5:13:47 PM CppRunner getOutput
+INFO: Program exited with code: 0

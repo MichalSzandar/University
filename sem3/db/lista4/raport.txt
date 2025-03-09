@@ -1,0 +1,428 @@
+**zad.2**
+//przełączenie na bazę danych library 
+use library
+
+//wstawianie danych do kolekcji authors
+db.authors.insertMany(
+[
+  {
+    _id: ObjectId('65711ccdcb2d05e2c973fe85'),
+    name: { first: 'J.R.R', last: 'Tolkien' },
+    country: 'UK',
+    birth: ISODate('1892-01-02T22:36:00.000Z'),
+    death: ISODate('1973-09-01T23:00:00.000Z')
+  },
+  {
+    _id: ObjectId('65711ccdcb2d05e2c973fe86'),
+    name: { first: 'Henryk', last: 'Sienkiewicz' },
+    country: 'Poland',
+    birth: ISODate('1846-05-04T22:36:00.000Z'),
+    death: ISODate('1916-11-14T23:00:00.000Z')
+  },
+  {
+    _id: ObjectId('65711ccdcb2d05e2c973fe87'),
+    name: { first: 'Juliusz', last: 'Slowacki' },
+    country: 'Poland',
+    birth: ISODate('1809-09-03T22:36:00.000Z'),
+    death: ISODate('1849-04-02T22:36:00.000Z')
+  },
+  {
+    _id: ObjectId('65711ccdcb2d05e2c973fe88'),
+    name: { first: 'Adam', last: 'Mickiewicz' },
+    country: 'Poland',
+    birth: ISODate('1798-12-24T00:00:00.000Z'),
+    death: ISODate('1855-11-26T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('65711ccdcb2d05e2c973fe89'),
+    name: { first: 'George', last: 'Orwell' },
+    country: 'UK',
+    birth: ISODate('1903-06-25T00:00:00.000Z'),
+    death: ISODate('1950-01-21T00:00:00.000Z')
+  }
+])
+
+//wstawianie danych do kolekcji books
+db.books.insertMany(
+[
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe86'),
+    title: 'The Hobbit',
+    isbn: '978-0-261-10295-6',
+    publication_year: 1937,
+    language: 'English',
+    author: ObjectId('65711ccdcb2d05e2c973fe85'),
+    publisher: { name: 'George Allen & Unwin', country: 'UK' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe87'),
+    title: 'Balladyna',
+    isbn: '978-83-01-12345-6',
+    publication_year: 1839,
+    language: 'Polish',
+    author: ObjectId('65711ccdcb2d05e2c973fe87'),
+    publisher: { name: 'Drukarnia Warszawska', country: 'Poland' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe88'),
+    title: 'Kordian',
+    isbn: '978-83-02-67890-1',
+    publication_year: 1834,
+    language: 'Polish',
+    author: ObjectId('65711ccdcb2d05e2c973fe87'),
+    publisher: { name: 'Wydawnictwo Literackie', country: 'Poland' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe89'),
+    title: 'Anhelli',
+    isbn: '978-83-03-54321-9',
+    publication_year: 1838,
+    language: 'Polish',
+    author: ObjectId('65711ccdcb2d05e2c973fe87'),
+    publisher: { name: 'Księgarnia Polska', country: 'Poland' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe90'),
+    title: 'Pan Tadeusz',
+    isbn: '978-83-01-12346-3',
+    publication_year: 1834,
+    language: 'Polish',
+    author: ObjectId('65711ccdcb2d05e2c973fe88'),
+    publisher: { name: 'Drukarnia Wilenska', country: 'Poland' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe91'),
+    title: 'Dziady',
+    isbn: '978-83-02-67891-8',
+    publication_year: 1823,
+    language: 'Polish',
+    author: ObjectId('65711ccdcb2d05e2c973fe88'),
+    publisher: { name: 'Księgarnia Literacka', country: 'Poland' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe92'),
+    title: '1984',
+    isbn: '978-0-452-28423-4',
+    publication_year: 1949,
+    language: 'English',
+    author: ObjectId('65711ccdcb2d05e2c973fe89'),
+    publisher: { name: 'Secker & Warburg', country: 'UK' }
+  },
+  {
+    _id: ObjectId('65712008cb2d05e2c973fe93'),
+    title: 'Animal Farm',
+    isbn: '978-0-452-28424-1',
+    publication_year: 1945,
+    language: 'English',
+    author: ObjectId('65711ccdcb2d05e2c973fe89'),
+    publisher: { name: 'Secker & Warburg', country: 'UK' }
+  }
+])
+
+//próba wstawienia autora z polem death ustawionym na null
+
+db.authors.insertOne(
+{
+    _id: ObjectId('65711ccdcb2d05e2c973fe90'),
+    name: { first: "Andrzej", last: "Sapkowski"},
+    country: "Poland",
+    birth: ISODate('1948-06-21T00:00:00.000Z'),
+    death: null
+})
+
+//otrzymuje komunikat o poprawnym wstawieniu danych
+//spróbujmy przy wpisywaniu autora zamiec nazwe pola country na kraj
+db.authors.insertOne(
+{
+_id: ObjectId('65711ccdcb2d05e2c973fe91'), 
+name: { first: "Marek", last: "Aureliusz" }, 
+kraj: "Hiszpania",
+birth: null, 
+death: null 
+} )
+
+//dane zostaly pomyslnie wstawione
+//Podobnie dzieje sie kiedy pominiemy niektóre pola np. 
+db.authors.insertOne({ _id: ObjectId('65711ccdcb2d05e2c973fe91'), name: { first: "Marek", last: "Aureliusz" }, kraj: "Hiszpania" } )
+
+//możemy to jednak zmienić  poprzez dodanie sposobu walidacji dokumentow do kolekcji books i authors
+
+db.runCommand({
+  collMod: "books",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["title", "isbn", "publication_year", "language", "author", "publisher"],
+      properties: {
+        title: {
+          bsonType: "string",
+          description: "Title is required and must be a string."
+        },
+        isbn: {
+          bsonType: "string",
+          description: "ISBN is required and must be a string."
+        },
+        publication_year: {
+          bsonType: "int",
+          minimum: 1500,
+          maximum: 2100,
+          description: "Publication year is required and must be an integer between 1500 and 2100."
+        },
+        language: {
+          bsonType: "string",
+          description: "Language is required and must be a string."
+        },
+        author: {
+          bsonType: "objectId",
+          description: "Author is required and must be a valid ObjectId."
+        },
+        publisher: {
+          bsonType: "object",
+          required: ["name", "country"],
+          properties: {
+            name: {
+              bsonType: "string",
+              description: "Publisher name is required and must be a string."
+            },
+            country: {
+              bsonType: "string",
+              description: "Publisher country is required and must be a string."
+            }
+          },
+          description: "Publisher is required and must be an object."
+        }
+      }
+    }
+  },
+  validationLevel: "strict"
+})
+
+db.runCommand({
+  collMod: "authors",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["name", "country", "birth"],
+      properties: {
+        name: {
+          bsonType: "object",
+          required: ["first", "last"],
+          properties: {
+            first: {
+              bsonType: "string",
+              description: "First name is required and must be a string."
+            },
+            last: {
+              bsonType: "string",
+              description: "Last name is required and must be a string."
+            }
+          },
+          description: "Name is required and must contain 'first' and 'last' fields."
+        },
+        country: {
+          bsonType: "string",
+          description: "Country is required and must be a string."
+        },
+        birth: {
+          bsonType: "date",
+          description: "Birth date is required and must be a valid date."
+        },
+        death: {
+          bsonType: ["date", "null"],
+          description: "Death date can be a valid date or null."
+        }
+      }
+    }
+  },
+  validationLevel: "strict"
+})
+
+//dodawanie kolekcji reviews 
+db.createCollection("reviews", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["book_id", "reviewer", "rating", "review_text"],
+      properties: {
+        book_id: {
+          bsonType: "objectId",
+          description: "Book ID is required and must be a valid ObjectId."
+        },
+        reviewer: {
+          bsonType: "object",
+          required: ["name"],
+          properties: {
+            name: {
+              bsonType: "string",
+              description: "Reviewer name is required and must be a string."
+            }
+          },
+          description: "Reviewer is required and must contain 'name'."
+        },
+        rating: {
+          bsonType: "int",
+          minimum: 1,
+          maximum: 5,
+          description: "Rating is required and must be an integer between 1 and 5."
+        },
+        review_text: {
+          bsonType: "string",
+          description: "Review text is required and must be a string."
+        }
+      }
+    }
+  }
+})
+
+//wstawianie recenzji dla ksiązki "Hobbit"
+db.reviews.insertMany([
+  {
+    book_id: ObjectId("65712008cb2d05e2c973fe86"),
+    reviewer: { name: "Alice Johnson" },
+    rating: 5,
+    review_text: "An amazing story with vivid characters and an epic journey!"
+  },
+  {
+    book_id: ObjectId("65712008cb2d05e2c973fe86"),
+    reviewer: { name: "John Doe" },
+    rating: 2,
+    review_text: "I found the story slow and hard to follow in some parts."
+  },
+  {
+    book_id: ObjectId("65712008cb2d05e2c973fe86"),
+    reviewer: { name: "Emily Smith" },
+    rating: 4,
+    review_text: "A great read, though somets felt a bit too detailed."
+  }
+])
+
+//wstawianie pola awards dla kazdego autora
+
+db.authors.updateMany(
+  {},
+  { $set: { awards: [] } } // Dodaj puste pole 'awards' dla każdego autora
+)
+
+//wstawianie przykladowych nagród
+db.authors.updateOne(
+  { _id: ObjectId("65711ccdcb2d05e2c973fe85") }, // J.R.R. Tolkien
+  { $set: { awards: [ { name: "International Fantasy Award", year: 1957 } ] } }
+)
+
+db.authors.updateOne(
+  { _id: ObjectId("65711ccdcb2d05e2c973fe86") }, // Henryk Sienkiewicz
+  { $set: { awards: [ { name: "Nobel Prize in Literature", year: 1905 } ] } }
+)
+
+//wstawianie pola genres w kolekcji books
+
+db.books.updateMany(
+  {},
+  { $set: { genres: [] } } // Dodaj puste pole 'genres' dla każdej książki
+)
+
+
+//wstawianie danych 
+db.books.updateOne(
+  { _id: ObjectId("65712008cb2d05e2c973fe86") }, // The Hobbit
+  { $set: { genres: [ "Fantasy", "Adventure" ] } }
+)
+
+db.books.updateOne(
+  { title: "Balladyna" }, // Balladyna
+  { $set: { genres: [ "Drama", "Tragedy" ] } }
+)
+
+//zad.3
+
+//wyszukiwania ksiazek autora o nazwisku Tolkien
+db.books.find({
+  author: db.authors.findOne({ 
+    "name.first": "J.R.R", 
+    "name.last": "Tolkien" 
+  })._id
+}).pretty()
+
+//wyszukiwanie polskich ksiazek fantasy
+db.books.find({
+  language: "Polish",
+  genres: "Fantasy"
+}).pretty()
+
+//wyszukiwanie ksiazek ze srednią ocen powyzej 4
+
+db.books.aggregate([
+  {
+    $lookup: {
+      from: "reviews",           // Kolekcja recenzji
+      localField: "_id",         // Pole `_id` w książkach
+      foreignField: "book_id",   // Pole `book_id` w recenzjach
+      as: "reviews"              // Wynikowe pole z recenzjami
+    }
+  },
+  {
+    $addFields: {
+      averageRating: {          // Dodanie pola `averageRating`
+        $avg: "$reviews.rating" // Oblicz średnią ocen z pola `rating`
+      }
+    }
+  },
+  {
+    $match: {
+      averageRating: { $gte: 4 } // Filtruj książki z średnią oceną >= 4
+    }
+  },
+  {
+    $project: {
+      title: 1,                  // Wyświetl tylko tytuł
+      averageRating: 1,          // Wyświetl średnią ocenę
+      _id: 0                     // Ukryj pole `_id`
+    }
+  }
+])
+
+//wyszukaj dane o ksi ˛a˙zkach napisanych przez polskich
+autorów wraz z nazwiskami tych autorów i ´sredni ˛a ocen ˛a ksi ˛a˙zek
+
+db.books.aggregate([
+  {
+    $lookup: {
+      from: "authors",           // Połącz z kolekcją authors
+      localField: "author",      // Pole "author" w books
+      foreignField: "_id",       // Pole "_id" w authors
+      as: "authorDetails"        // Wynikowe pole z danymi autora
+    }
+  },
+  {
+    $unwind: "$authorDetails"    // Rozpakuj tablicę authorDetails
+  },
+  {
+    $match: {
+      "authorDetails.country": "Poland" // Filtruj tylko polskich autorów
+    }
+  },
+  {
+    $lookup: {
+      from: "reviews",           // Połącz z kolekcją reviews
+      localField: "_id",         // Pole "_id" w books
+      foreignField: "book_id",   // Pole "book_id" w reviews
+      as: "reviews"              // Wynikowe pole z recenzjami
+    }
+  },
+  {
+    $addFields: {
+      averageRating: {           // Dodaj pole averageRating
+        $avg: "$reviews.rating"  // Oblicz średnią ocen z recenzji
+      }
+    }
+  },
+  {
+    $project: {                  // Wybierz dane do wyświetlenia
+      _id: 0,
+      title: 1,                  // Tytuł książki
+      "authorDetails.name.last": 1, // Nazwisko autora
+      averageRating: 1           // Średnia ocena
+    }
+  }
+])
+
