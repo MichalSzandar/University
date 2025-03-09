@@ -1,0 +1,1 @@
+int palindrom(char napis[]);
