@@ -1,0 +1,172 @@
+# Michał Szandarowski 279777
+
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~$ svn export https://repo.cs.pwr.edu.pl/279777-dir/mw1/lab3 lab3                                            
+A    lab3
+A    lab3/generators
+A    lab3/results
+A    lab3/results/binarysearch
+A    lab3/results/charts
+A    lab3/results/charts/binary_search
+A    lab3/results/charts/select
+A    lab3/results/charts/sorting
+A    lab3/results/dual_pivot_qs
+A    lab3/results/quick_sort
+A    lab3/results/randomselect
+A    lab3/results/select
+A    lab3/results/select_experimental
+A    lab3/select_algorithms
+A    lab3/tests
+A    lab3/select_algorithms/select.cpp
+A    lab3/results/experimentalcharts.py
+A    lab3/tests/binary_search_test.sh
+A    lab3/tests/qs_test.sh
+A    lab3/Makefile
+A    lab3/generators/DecreaseGenerator.cpp
+A    lab3/generators/IncreaseGenerator.cpp
+A    lab3/generators/IncreaseRandomGenerator.cpp
+A    lab3/tests/test_select.sh
+A    lab3/generators/RandomArrayGenerator.cpp
+A    lab3/generators/RandomGenerator.cpp
+A    lab3/results/binarysearch/bs_experimental_test.csv
+A    lab3/results/binarysearch/bs_test.csv
+A    lab3/results/chartbs.py
+A    lab3/results/chartbs_experimental.py
+A    lab3/results/chartgenerator.py
+A    lab3/results/chartqs.py
+A    lab3/results/charts/binary_search/binary_search_execution_time.png
+A    lab3/results/charts/binary_search/binary_search_execution_time_random.png
+A    lab3/results/charts/binary_search/binary_search_key_comparisons.png
+A    lab3/results/charts/binary_search/binary_search_key_comparisons_random.png
+A    lab3/results/charts/select/randomselect_key_comparisons.png
+A    lab3/results/charts/select/randomselect_key_swaps.png
+A    lab3/results/charts/select/select_key_comparisons.png
+A    lab3/results/charts/select/select_key_comparisons_experimental.png
+A    lab3/results/charts/select/select_key_swaps.png
+A    lab3/results/charts/select/select_key_swaps_experimental.png
+A    lab3/results/charts/sorting/comparisons_vs_n.png
+A    lab3/results/charts/sorting/swaps_vs_n.png
+A    lab3/results/dual_pivot_qs/dual_pivot_qs_test.csv
+A    lab3/results/quick_sort/qs_test.csv
+A    lab3/results/randomselect/randomselect_test.csv
+A    lab3/results/select/select_test.csv
+A    lab3/select_algorithms/DualPivotQS.cpp
+A    lab3/select_algorithms/binarysearch.cpp
+A    lab3/select_algorithms/select_experimental.cpp
+A    lab3/tests/dual_pivot_qs_test.sh
+A    lab3/tests/select_experimental_test.sh
+A    lab3/results/select_experimental/select_experimental_test.csv
+A    lab3/select_algorithms/QuickSort.cpp
+A    lab3/select_algorithms/randomselect.cpp
+A    lab3/tests/binary_search_experimental_test.sh
+A    lab3/tests/generate_tests.sh
+A    lab3/tests/test_randomselect.sh
+Wyeksportowano wersję 5.
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~$ cd lab3/
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ make
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./generators/RandomGenerator 25 5 | ./select_algorithms/select                                        
+17 21 37 33 37 19 26 42 34 16 9 12 18 30 33 24 48 46 24 37 28 12 42 2 20 
+18 20 26 33 37 0 33 0 -1401630627 5 -602905814 553971618 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+17 21 16 19 9 12 18 24 24 2 12 20 26 30 33 42 34 37 46 48 42 37 33 28 37 
+12 17 18 0 37 0 33 0 -1401630627 5 -602905814 553971618 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+9 16 2 12 12 17 19 18 24 24 21 20 26 30 33 42 34 37 46 48 42 37 33 28 37 
+2 9 12 12 16 17 19 18 24 24 21 20 26 30 33 42 34 37 46 48 42 37 33 28 37 
+2 9 12 12 16 17 19 18 24 24 21 20 26 30 33 42 34 37 46 48 42 37 33 28 37 
+ending state of array: 2 9 12 12 16 17 19 18 24 24 21 20 26 30 33 42 34 37 46 48 42 37 33 28 37 
+
+Initial array: 25 17 21 37 33 37 19 26 42 34 16 9 12 18 30 33 24 48 46 24 37 28 12 42 2 20 5
+k: 5
+Result: 16
+Select execution time: 1087 microseconds
+119 34 1087
+Sorted array: 2 9 12 12 16 17 18 19 20 21 24 24 26 28 30 33 33 34 37 37 37 42 42 46 48 
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./generators/RandomGenerator 25 10 | ./select_algorithms/select                                       
+30 4 8 19 45 5 32 45 46 3 8 7 24 45 10 31 15 11 40 34 29 34 45 31 8 
+10 19 31 31 32 0 33 0 2001067481 5 1692298649 -155196493 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+4 8 19 30 3 5 7 8 10 24 11 15 8 29 31 45 32 45 34 40 45 46 31 34 45 
+8 8 11 0 32 0 33 0 2001067481 5 1692298649 -155196493 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+8 8 11 0 32 0 33 0 2001067481 5 1692298649 -155196493 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+3 4 5 7 8 29 19 8 10 24 8 11 15 30 31 45 32 45 34 40 45 46 31 34 45 
+11 19 0 0 32 0 33 0 2001067481 5 1692298649 -155196493 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+3 4 5 7 8 8 10 8 11 29 19 30 15 24 31 45 32 45 34 40 45 46 31 34 45 
+3 4 5 7 8 8 10 8 11 15 19 24 29 30 31 45 32 45 34 40 45 46 31 34 45 
+3 4 5 7 8 8 10 8 11 15 19 24 29 30 31 45 32 45 34 40 45 46 31 34 45 
+ending state of array: 3 4 5 7 8 8 10 8 11 15 19 24 29 30 31 45 32 45 34 40 45 46 31 34 45 
+
+Initial array: 25 30 4 8 19 45 5 32 45 46 3 8 7 24 45 10 31 15 11 40 34 29 34 45 31 8 10
+k: 10
+Result: 15
+Select execution time: 1907 microseconds
+139 43 1907
+Sorted array: 3 4 5 7 8 8 8 10 11 15 19 24 29 30 31 31 32 34 34 40 45 45 45 45 46 
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./generators/RandomGenerator 25 20 | ./select_algorithms/select                                       
+14 37 1 10 27 9 16 47 46 12 41 38 29 24 16 31 34 49 12 44 45 25 10 13 7 
+13 14 16 29 34 0 33 0 875901707 6 1643166835 452310264 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+1 10 14 9 12 12 7 10 13 16 16 24 29 38 41 27 31 34 44 49 37 45 46 25 47 
+29 34 45 0 34 0 33 0 875901707 6 1643166835 452310264 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+1 10 14 9 12 12 7 10 13 16 16 24 29 27 31 25 34 47 44 49 38 37 45 46 41 
+44 45 0 0 34 0 33 0 875901707 6 1643166835 452310264 0 0 56129 0 0 0 0 0 0 0 0 0 0 
+1 10 14 9 12 12 7 10 13 16 16 24 29 27 31 25 34 37 38 41 44 49 46 45 47 
+1 10 14 9 12 12 7 10 13 16 16 24 29 27 31 25 34 37 38 41 44 49 46 45 47 
+ending state of array: 1 10 14 9 12 12 7 10 13 16 16 24 29 27 31 25 34 37 38 41 44 49 46 45 47 
+
+Initial array: 25 14 37 1 10 27 9 16 47 46 12 41 38 29 24 16 31 34 49 12 44 45 25 10 13 7 20
+k: 20
+Result: 41
+Select execution time: 1739 microseconds
+135 36 1739
+Sorted array: 1 7 9 10 10 12 12 13 14 16 16 24 25 27 29 31 34 37 38 41 44 45 46 47 49 
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./generators/RandomGenerator 25 5 | ./select_algorithms/randomselect                                  
+21 15 22 47 19 1 13 20 38 23 0 17 43 37 2 33 33 49 38 45 8 20 4 34 29 
+1 13 0 2 8 4 15 20 38 23 22 17 43 37 47 33 33 49 38 45 19 20 21 34 29 
+0 1 4 2 8 13 15 20 38 23 22 17 43 37 47 33 33 49 38 45 19 20 21 34 29 
+0 1 2 13 8 4 15 20 38 23 22 17 43 37 47 33 33 49 38 45 19 20 21 34 29 
+0 1 2 4 8 13 15 20 38 23 22 17 43 37 47 33 33 49 38 45 19 20 21 34 29 
+0 1 2 4 8 13 15 20 38 23 22 17 43 37 47 33 33 49 38 45 19 20 21 34 29 
+ending state of array: 0 1 2 4 8 13 15 20 38 23 22 17 43 37 47 33 33 49 38 45 19 20 21 34 29 
+
+Initial array: 25 21 15 22 47 19 1 13 20 38 23 0 17 43 37 2 33 33 49 38 45 8 20 4 34 29 5
+k: 5
+Result: 8
+Random select execution time: 1374 microseconds
+35 19 1374
+Sorted array: 0 1 2 4 8 13 15 17 19 20 20 21 22 23 29 33 33 34 37 38 38 43 45 47 49 
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./generators/RandomGenerator 25 10 | ./select_algorithms/randomselect                                 
+40 36 9 7 21 18 42 3 22 22 44 34 6 42 13 27 5 20 34 31 46 33 43 35 18 
+9 7 21 18 3 22 22 34 6 13 27 5 20 34 31 33 18 35 42 42 46 44 43 40 36 
+9 7 21 18 3 22 22 6 13 18 5 20 27 34 31 33 34 35 42 42 46 44 43 40 36 
+9 7 18 3 6 13 18 5 20 22 21 22 27 34 31 33 34 35 42 42 46 44 43 40 36 
+9 7 18 3 6 13 18 5 20 21 22 22 27 34 31 33 34 35 42 42 46 44 43 40 36 
+ending state of array: 9 7 18 3 6 13 18 5 20 21 22 22 27 34 31 33 34 35 42 42 46 44 43 40 36 
+
+Initial array: 25 40 36 9 7 21 18 42 3 22 22 44 34 6 42 13 27 5 20 34 31 46 33 43 35 18 10
+k: 10
+Result: 21
+Random select execution time: 977 microseconds
+53 44 977
+Sorted array: 3 5 6 7 9 13 18 18 20 21 22 22 27 31 33 34 34 35 36 40 42 42 43 44 46 
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./generators/RandomGenerator 25 20 | ./select_algorithms/randomselect                                 
+47 6 45 35 31 17 40 39 41 6 8 7 46 16 18 33 3 29 40 17 26 9 8 30 45 
+6 35 31 17 40 39 41 6 8 7 16 18 33 3 29 40 17 26 9 8 30 45 45 47 46 
+6 6 8 7 16 3 9 8 17 17 40 18 33 39 29 40 30 26 41 35 31 45 45 47 46 
+6 6 8 7 16 3 9 8 17 17 18 29 26 30 40 40 31 33 41 35 39 45 45 47 46 
+6 6 8 7 16 3 9 8 17 17 18 29 26 30 31 33 35 40 41 39 40 45 45 47 46 
+6 6 8 7 16 3 9 8 17 17 18 29 26 30 31 33 35 39 40 40 41 45 45 47 46 
+6 6 8 7 16 3 9 8 17 17 18 29 26 30 31 33 35 39 40 40 41 45 45 47 46 
+ending state of array: 6 6 8 7 16 3 9 8 17 17 18 29 26 30 31 33 35 39 40 40 41 45 45 47 46 
+
+Initial array: 25 47 6 45 35 31 17 40 39 41 6 8 7 46 16 18 33 3 29 40 17 26 9 8 30 45 20
+k: 20
+Result: 40
+Random select execution time: 980 microseconds
+65 46 980
+Sorted array: 3 6 6 7 8 8 9 16 17 17 18 26 29 30 31 33 35 39 40 40 41 45 45 46 47 
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ ./tests/generate_tests.sh                                                                             
+make: Nie ma nic do zrobienia w 'all'.
+generating test results ...
+all tests have been generated in results directory
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3$ cd results/
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3/results$ ls
+binarysearch  chartbs_experimental.py  chartbs.py  chartgenerator.py  chartqs.py  charts  dual_pivot_qs  experimentalcharts.py  quick_sort  randomselect  select  select_experimental
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3/results$ cd charts/
+
+micha-szandarowski@micha-szandarowski-Vivobook-ASUSLaptop-K3605ZC-K3605ZC:~/lab3/results/charts/select$ tmux capture-pane -p -S'-' -E'-' -J > my-log                                    
