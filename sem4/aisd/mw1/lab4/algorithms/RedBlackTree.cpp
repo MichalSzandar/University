@@ -1,80 +1,89 @@
 #include "../include/RedBlackTree.hpp"
 
+// Constructor
 RedBlackTree::RedBlackTree() : root(nullptr), ll(false), rr(false), lr(false), rl(false) {}
 
+// Insertion logic (unchanged)
 RedBlackTree::RBNode* RedBlackTree::insert(RBNode* node, const int value) {
     bool f = false; // Flag to check RED-RED conflict
 
     if (node == nullptr)
         return new RBNode(value);
-    else if (value < node->val) {
-        node->left = insert(node->left, value);
-        node->left->parent = node;
+    else if (isGreater(node->val, value)) {
+        setLeft(node, insert(getLeft(node), value));
+        setParent(getLeft(node), node);
+
         if (node != root) {
-            if (!node->isBlack && !node->left->isBlack)
+            if (!node->isBlack && !getLeft(node)->isBlack)
+                f = true;
+        }
+    } else if (isGreater(value, node->val)) {
+        setRight(node, insert(getRight(node), value));
+        setParent(getRight(node), node);
+
+        if (node != root) {
+            if (!node->isBlack && !getRight(node)->isBlack)
                 f = true;
         }
     } else {
-        node->right = insert(node->right, value);
-        node->right->parent = node;
-        if (node != root) {
-            if (!node->isBlack && !node->right->isBlack)
-                f = true;
-        }
+        // Duplicate value, do nothing
+        return node;
     }
 
     // Perform rotations
     if (ll) {
         node = rotateLeft(node);
         node->isBlack = true;
-        node->left->isBlack = false;
+        getLeft(node)->isBlack = false;
         ll = false;
     } else if (rr) {
         node = rotateRight(node);
         node->isBlack = true;
-        node->right->isBlack = false;
+        getRight(node)->isBlack = false;
         rr = false;
     } else if (rl) {
-        node->right = rotateRight(node->right);
-        node->right->parent = node;
+        setRight(node, rotateRight(getRight(node)));
+        setParent(getRight(node), node);
+
         node = rotateLeft(node);
         node->isBlack = true;
-        node->left->isBlack = false;
+        getLeft(node)->isBlack = false;
         rl = false;
     } else if (lr) {
-        node->left = rotateLeft(node->left);
-        node->left->parent = node;
+        setLeft(node, rotateLeft(getLeft(node)));
+        setParent(getLeft(node), node);
+
         node = rotateRight(node);
         node->isBlack = true;
-        node->right->isBlack = false;
+        getRight(node)->isBlack = false;
         lr = false;
     }
 
     // Handle RED-RED conflicts
     if (f) {
-        if (node->parent->right == node) {
-            if (node->parent->left == nullptr || node->parent->left->isBlack == true) {
-                if (node->left != nullptr && node->left->isBlack == false)
+        if (!isLeft(node)) {
+            if (getLeft(getParent(node)) == nullptr || getLeft(getParent(node))->isBlack == true) {
+                if (getLeft(node) != nullptr && getLeft(node)->isBlack == false)
                     rl = true;
-                else if (node->right != nullptr && node->right->isBlack == false)
+                else if (getRight(node) != nullptr && getRight(node)->isBlack == false)
                     ll = true;
             } else {
-                node->parent->left->isBlack = true;
+                getLeft(getParent(node))->isBlack = true;
                 node->isBlack = true;
-                if (node->parent != this->root)
-                    node->parent->isBlack = false;
+                if (getParent(node) != root)
+                    getParent(node)->isBlack = false;
             }
         } else {
-            if (node->parent->right == nullptr || node->parent->right->isBlack == true) {
-                if (node->left != nullptr && node->left->isBlack == false)
+            if (getRight(getParent(node)) == nullptr || getRight(getParent(node))->isBlack == true) {
+                if (getLeft(node) != nullptr && getLeft(node)->isBlack == false)
                     rr = true;
-                else if (node->right != nullptr && node->right->isBlack == false)
+                else if (getRight(node) != nullptr && getRight(node)->isBlack == false)
                     lr = true;
             } else {
-                node->parent->right->isBlack = true;
+                getRight(getParent(node))->isBlack = true;
                 node->isBlack = true;
-                if (node->parent != this->root)
-                    node->parent->isBlack = false;
+                if (getParent(node) != root)
+                    getParent(node)->isBlack = false;
             }
         }
         f = false;
@@ -82,87 +91,58 @@ RedBlackTree::RBNode* RedBlackTree::insert(RBNode* node, const int value) {
     return node;
 }
 
-RedBlackTree::RBNode* RedBlackTree::rotateLeft(RBNode* node) {
-    RBNode* x = node->right;
-    RBNode* y = x->left;
-    x->left = node;
-    node->right = y;
-    node->parent = x;
-    if (y != nullptr)
-        y->parent = node;
-    return x;
+// Improved rotation: updates parent pointers and root if necessary
+RedBlackTree::RBNode* RedBlackTree::rotateLeft(RBNode* x) {
+    RBNode* y = getRight(x);
+    setRight(x, getLeft(y));
+    if (getLeft(y) != nullptr)
+        setParent(getLeft(y), x);
+
+    setParent(y, x->parent);
+
+    if (getParent(x) == nullptr)
+        root = y;
+    else if (isLeft(x))
+        setLeft(x->parent, y);
+    else
+        setRight(x->parent, y);
+
+    setLeft(y, x);
+    setParent(x, y);
+    return y;
 }
 
-RedBlackTree::RBNode* RedBlackTree::rotateRight(RBNode* node) {
-    RBNode* x = node->left;
-    RBNode* y = x->right;
-    x->right = node;
-    node->left = y;
-    node->parent = x;
-    if (y != nullptr)
-        y->parent = node;
-    return x;
-}
+RedBlackTree::RBNode* RedBlackTree::rotateRight(RBNode* x) {
+    RBNode* y = getLeft(x);
+    setLeft(x, getRight(y));
+    if (getRight(y) != nullptr)
+        setParent(getRight(y), x);
 
-bool RedBlackTree::isLeft(RBNode* node) {
-    node_ops++;
-    return node->parent && node->parent->left == node; // Check if node is a left child
-}
+    setParent(y, x->parent);
 
-RedBlackTree::RBNode* RedBlackTree::minimum(RBNode* node) {
-    while (node->left != nullptr) {
-        node = node->left;
-    }
-    return node;
-}
+    if (getParent(x) == nullptr)
+        root = y;
+    else if (isLeft(x))
+        setLeft(x->parent, y);
+    else
+        setRight(x->parent, y);
 
-void RedBlackTree::transplant(RBNode* u, RBNode* v) {
-    if (u->parent == nullptr) {
-        root = v; // If u is root, update root
-    } else if (u == u->parent->left) {
-        u->parent->left = v; // If u is left child, update parent's left child
-    } else {
-        u->parent->right = v; // If u is right child, update parent's right child
-    }
-    if (v != nullptr) {
-        v->parent = u->parent; // Update v's parent
-    }
-}
-
-RedBlackTree::RBNode* RedBlackTree::BSTReplace(RBNode* node) {
-    if (node->left != nullptr && node->right != nullptr) {
-        return minimum(node->right); // If node has two children, return the minimum of the right subtree
-    } else if (node->left != nullptr) {
-        return node->left; // If node has only left child, return it
-    } else if (node->right != nullptr) {
-        return node->right; // If node has only right child, return it
-    } else {
-        return nullptr; // If node is a leaf, return nullptr
-    }
-}
-
-RedBlackTree::RBNode* RedBlackTree::getSibling(RBNode* node) {
-    if (node == nullptr || node->parent == nullptr) {
-        return nullptr; // No sibling if node is null or has no parent
-    }
-    if (node == node->parent->left) {
-        return node->parent->right; // If node is left child, return parent's right child
-    } else {
-        return node->parent->left; // If node is right child, return parent's left child
-    }
+    setRight(y, x);
+    setParent(x, y);
+    return y;
 }
 
 void RedBlackTree::fixDoubleBlack(RBNode *x) {
     if (x == root)
-      // Reached root
-      return;
+         // Reached root
+        return;
 
     RBNode *sibling = getSibling(x);
-    RBNode* parent = x->parent;
+    RBNode* parent = getParent(x);
 
     if (sibling == nullptr) {
-      // No sibling, double black pushed up
-      fixDoubleBlack(parent);
+        // No sibling, double black pushed up
+        fixDoubleBlack(parent);
     } else {
       if (sibling->isBlack == false) {
         // Sibling red
@@ -175,33 +155,35 @@ void RedBlackTree::fixDoubleBlack(RBNode *x) {
           // right case
           parent = rotateLeft(parent);
         }
+
         fixDoubleBlack(x);
+        
       } else {
         // Sibling black
-        if ((sibling->left != nullptr && sibling->left->isBlack == false) ||
-            (sibling->right != nullptr && sibling->right->isBlack == false)) {
+        if ((getLeft(sibling) != nullptr && getLeft(sibling)->isBlack == false) ||
+            (getRight(sibling) != nullptr && getRight(sibling)->isBlack == false)) {
           // at least 1 red children
-          if (sibling->left != nullptr && sibling->left->isBlack == false) {
+          if (getLeft(sibling) != nullptr && getLeft(sibling)->isBlack == false) {
             if (isLeft(sibling)) {
               // left left
-              sibling->left->isBlack = sibling->isBlack;
+              getLeft(sibling)->isBlack = sibling->isBlack;
               sibling->isBlack = parent->isBlack;
               parent = rotateRight(parent);
             } else {
               // right left
-              sibling->left->isBlack = parent->isBlack;
+              getLeft(sibling)->isBlack = parent->isBlack;
               sibling = rotateRight(sibling);
               parent = rotateLeft(parent);
             }
           } else {
             if (isLeft(sibling)) {
               // left right
-              sibling->right->isBlack = parent->isBlack;
+              getRight(sibling)->isBlack = parent->isBlack;
               sibling = rotateLeft(sibling);
               parent = rotateRight(parent);
             } else {
               // right right
-              sibling->right->isBlack = sibling->isBlack;
+              getRight(sibling)->isBlack = sibling->isBlack;
               sibling->isBlack = parent->isBlack;
               parent = rotateLeft(parent);
             }
@@ -209,22 +191,22 @@ void RedBlackTree::fixDoubleBlack(RBNode *x) {
           parent->isBlack = true;
         } else {
           // 2 black children
-          sibling->isBlack = false;
-          if (parent->isBlack == true)
+            sibling->isBlack = false;
+            if (parent->isBlack == true)
             fixDoubleBlack(parent);
-          else
+            else
             parent->isBlack = true;
+            }
         }
-      }
     }
-  }
+}
 
 bool RedBlackTree::remove(RBNode* node) {
     RBNode* v = node;
     RBNode* u = BSTReplace(node);
 
     bool uvBlack = ((u == nullptr || u->isBlack) && (v->isBlack));
-    RBNode* parent = v->parent;
+    RBNode* parent = getParent(v);
 
     if (u == nullptr) {
         //v is leaf
@@ -242,9 +224,9 @@ bool RedBlackTree::remove(RBNode* node) {
             }
 
             if (isLeft(v)) {
-                parent->left = nullptr; // Remove v from its parent's left child
+                setLeft(parent, nullptr);
             } else {
-                parent->right = nullptr; // Remove v from its parent's right child
+                setRight(parent, nullptr);
             }
         }
 
@@ -252,21 +234,21 @@ bool RedBlackTree::remove(RBNode* node) {
         return true; // Successfully removed leaf node
     }
 
-    if (v->left == nullptr || v->right == nullptr) {
+    if (getLeft(v) == nullptr || getRight(v) == nullptr) {
         //v has one child
         if (v == root) {
             v->val = u->val; // If v is root, replace value with u's value
-            v->left = nullptr;
-            v->right = nullptr;
+            setLeft(v, nullptr);
+            setRight(v, nullptr);
             delete u;
         } else {
             if (isLeft(v)) {
-                parent->left = u; // If v is left child, replace with u
+                setLeft(parent, u); // If v is left child, replace with u
             } else {
-                parent->right = u; // If v is right child, replace with u
+                setRight(parent, u); // If v is right child, replace with u
             }
             delete v;
-            u->parent = parent; // Update u's parent
+            setParent(u, parent); // Update u's parent
             if (uvBlack) {
                 fixDoubleBlack(u);
             } else {
@@ -281,24 +263,103 @@ bool RedBlackTree::remove(RBNode* node) {
 }
 
 //--------------------------------------------------------------------------------------------------------
-//Utils
+//Funkcje pomocnicze, które zwiększają liczniki
+//--------------------------------------------------------------------------------------------------------
+
+RedBlackTree::RBNode *RedBlackTree::getRight(RBNode *node) {
+    node_ops++;
+    return node->right;
+}
+
+RedBlackTree::RBNode *RedBlackTree::getLeft(RBNode *node) {
+    node_ops++;
+    return node->left;
+}
+
+RedBlackTree::RBNode *RedBlackTree::getParent(RBNode *node) {
+    node_ops++;
+    return node->parent;
+}
+
+void RedBlackTree::setLeft(RBNode *node, RBNode *left) {
+    node_ops++;
+    node->left = left;
+}
+
+void RedBlackTree::setRight(RBNode *node, RBNode *right) {
+    node_ops++;
+    node->right = right;
+}
+
+void RedBlackTree::setParent(RBNode *node, RBNode *parent) {
+    node_ops++;
+    node->parent = parent;
+}
+
+void RedBlackTree::assign(RBNode*& x, RBNode* y) {
+    x = y;
+}
+
+bool RedBlackTree::isLeft(RBNode* node) {
+    return getParent(node) && getLeft(getParent(node)) == node;
+}
+
+RedBlackTree::RBNode* RedBlackTree::minimum(RBNode* node) {
+    while (getLeft(node) != nullptr) {
+        node = getLeft(node);
+    }
+
+    return node;
+}
+
+// Proper transplant: updates parent pointers and handles root
+void RedBlackTree::transplant(RBNode* u, RBNode* v) {
+    if (getParent(u) == nullptr)
+        root = v;
+    else if (isLeft(u))
+        setLeft(getParent(u), v);
+    else
+        setRight(getParent(u), v);
+    if (v != nullptr)
+        setParent(v, getParent(u));
+}
+
+RedBlackTree::RBNode* RedBlackTree::BSTReplace(RBNode* node) {
+    if (getLeft(node) != nullptr && getRight(node) != nullptr)
+        return minimum(node->right);
+    else if (getLeft(node) != nullptr)
+        return getLeft(node);
+    else if (getRight(node) != nullptr)
+        return getRight(node);
+    else
+        return nullptr;
+}
+
+RedBlackTree::RBNode* RedBlackTree::getSibling(RBNode* node) {
+    if (node == nullptr || getParent(node) == nullptr)
+        return nullptr;
+    if (isLeft(node))
+        return getRight(getParent(node));
+    else
+        return getLeft(getParent(node));
+}
+
 //--------------------------------------------------------------------------------------------------------
 
 bool RedBlackTree::insert(const int value) {
     if (root == nullptr) {
         root = new RBNode(value);
-        root->isBlack = true; // Root is always black
+        root->isBlack = true;
         return true;
-    } else 
+    } else
         root = insert(root, value);
-    
+
     return true;
 }
 
 bool RedBlackTree::remove(const int value) {
-    if (root == nullptr) {
-        return false; // Tree is empty
-    }
+    if (root == nullptr)
+        return false;
 
     RBNode* node = root;
     while (node && node->val != value) {
@@ -311,21 +372,20 @@ bool RedBlackTree::remove(const int value) {
         }
     }
 
-    if (node == nullptr) {
-        return false; // Value not found
-    }
+    if (node == nullptr)
+        return false;
     node_ops++;
 
     if (node->val == value) {
-        remove(node);
-        return true; // Successfully removed the node
+        return remove(node);
     }
+    return false; // <--- Missing return fixed
 }
 
 void RedBlackTree::inorder(RBNode* node) const {
     if (node != nullptr) {
         inorder(node->left);
-        std::cout << node->val << " ";
+        std::cout << node->val << (node->isBlack ? "B " : "R "); // Print color
         inorder(node->right);
     }
 }
@@ -334,10 +394,9 @@ void RedBlackTree::inorder() const {
     inorder(root);
 }
 
-int RedBlackTree::getHeight(RBNode* node) const{
-    if (node == nullptr) {
+int RedBlackTree::getHeight(RBNode* node) const {
+    if (node == nullptr)
         return 0;
-    }
     return std::max(getHeight(node->left), getHeight(node->right)) + 1;
 }
 
@@ -355,7 +414,8 @@ void RedBlackTree::print(const std::string& prefix, const RBNode* node, bool isL
     }
 }
 
-void RedBlackTree::print() const {
+void RedBlackTree::print() const
+{
     print("", root, false);
 }
 

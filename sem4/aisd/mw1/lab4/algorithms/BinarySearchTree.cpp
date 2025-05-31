@@ -4,11 +4,11 @@ bool BinarySearchTree::insert(Node*& node, const int value) {
     if (node == nullptr) {
         node = new Node(value);
     } else if (isGreater(node->val, value)) {
-        node_ops++;
         insert(node->left, value);
-    } else if (isGreater(value, node->val)) {
         node_ops++;
+    } else if (isGreater(value, node->val)) {
         insert(node->right, value);
+        node_ops++;
     } else {
         return false; // Duplicate value
     }
@@ -56,6 +56,27 @@ bool BinarySearchTree::remove(Node*& node, const int value) {
     }
 }
 
+//---------------------------------------------------------------------------------------------------------
+// Funkcje pomocnicze
+//----------------------------------------------------------------------------------------------------------
+BinarySearchTree::Node *BinarySearchTree::getLeft(Node *node) {
+    node_ops++;
+    return node->left;
+}
+BinarySearchTree::Node *BinarySearchTree::getRight(Node *node) {
+    node_ops++;
+    return node->right;
+}
+
+void BinarySearchTree::setLeft(Node *node, Node *left) {
+    node_ops++;
+    node->left = left;
+}
+void BinarySearchTree::setRight(Node *node, Node *right) {
+    node_ops++;
+    node->right = right;
+}
+
 bool BinarySearchTree::insert(const int value) {
     return insert(root, value);
 }
@@ -91,7 +112,8 @@ void BinarySearchTree::print(const std::string& prefix, const Node* node, bool i
     }
 }
 
-void BinarySearchTree::print() const {
+void BinarySearchTree::print() const
+{
     print("", root, false);
 }
 
