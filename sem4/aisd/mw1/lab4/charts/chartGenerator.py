@@ -1,8 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+path = "Splay"
+
 # Ścieżka do pliku z wynikami
-csv_path = "results/BST/BST_results.csv"
+csv_path = "results/" + path + "/" + path + "_test.csv"
 
 # Wczytanie danych
 df = pd.read_csv(csv_path)
@@ -28,7 +30,7 @@ plt.ylabel('Liczba porównań')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("results/BST/key_comparisons_plot.png")
+plt.savefig("results/" + path + "/key_comparisons_plot.png")
 plt.show()
 
 # Wykres 2: Operacje na wskaźnikach
@@ -41,7 +43,7 @@ plt.ylabel('Liczba operacji')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("results/BST/pointer_ops_plot.png")
+plt.savefig("results/" + path + "/pointer_ops_plot.png")
 plt.show()
 
 # Wykres 3: Wysokość drzewa
@@ -54,5 +56,5 @@ plt.ylabel('Wysokość')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("results/BST/tree_height_plot.png")
+plt.savefig("results/" + path + "/tree_height_plot.png")
 plt.show()
